@@ -1,2 +1,7 @@
-# PythonProjects
-p y t h o n - p r o j e c t s
+### This is a notepad (640x480)
+
+### It converts text to speech,
+
+### It also has a clock and a calculator, click "CALC"
+
+#### Iterate over the basics, tkinter, multithreading and pyttsx3.
