@@ -6,8 +6,8 @@ import os
 
 root = Tk()
 root.geometry("640x480")
-root.title("Notes")
-icon = PhotoImage(file='C:\\Users\\maths\\Pictures\\pngkeys2.png')
+root.title("Note")
+icon = PhotoImage(file='pngkeys2.png')
 root.iconphoto(True, icon)
 root.config(bg='black')
 root.resizable(False, False)
