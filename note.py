@@ -114,6 +114,7 @@ def open_calc():
 
     # set the configuration of GUI window
     gui.geometry("270x150")
+    gui.resizable(False, False)
 
     # StringVar() is the variable class
     # we create an instance of this class
