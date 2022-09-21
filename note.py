@@ -2,7 +2,7 @@ import pyttsx3
 from tkinter import *
 from tkinter import filedialog
 from time import strftime
-import os
+import threading
 
 root = Tk()
 root.geometry("640x480")
@@ -10,13 +10,11 @@ root.title("Note")
 icon = PhotoImage(file='pngkeys2.png')
 root.iconphoto(True, icon)
 root.config(bg='black')
-root.resizable(False, False)
-
 
 
 def save_file():
     print("")
-    open_file = filedialog.asksaveasfile(mode='w', defaultextension='.txt')
+    open_file = filedialog.asksaveasfile(mode='w', defaultextension='*txt')
     if open_file is None:
         return
     text = str(entry.get(1.0, END))
@@ -25,32 +23,29 @@ def save_file():
 
 
 def open_file():
-    file = filedialog.askopenfile(mode='r', filetype=[('text files', '*.txt')], defaultextension='.txt')
+    file = filedialog.askopenfile(mode='r', defaultextension='*txt')
     if file is not None:
         content = file.read()
     entry.insert(INSERT, content)
 
 
-# DIGITAL CLOCK TO SHOW THE TIME:
+# A DIGITAL CLOCK TO DISPLAY:
 def get_time():
     string = strftime('%H:%M:%S %p')
     clock.config(text=string)
     clock.after(1000, get_time)
 
+
 def speak():
     speaker = pyttsx3.init()
     voices = speaker.getProperty('voices')
     speaker.setProperty('voice', voices[1].id)
-    textcontent = entry.get(1.0, END)
-    speaker.say(textcontent)
-    speaker.runAndWait()
+    text_content = entry.get(1.0, END)
+    speaker.say(text_content)
+    threading.Thread(target=speaker.runAndWait).start()
 
 
-#####################################################################################################################
-#####################################################################################################################
-
-# -------------------- OPEN A NEW WINDOW WITH A CALCULaTOR IN IT --------------------
-
+# A CALCULATOR:
 def open_calc():
     global expression
     # globally declare the expression variable
@@ -207,35 +202,45 @@ def open_calc():
     # start the GUI
     gui.mainloop()
 
-######
-#######################################################################################################################
-#######################################################################################################################
-#####
+# Frame for buttons
+button_frame = Frame(root, background="black")
+button_frame.pack(pady=2)
 
-b1 = Button(root, width='10', height='1', bg='white', fg='black', text='SAVE FILE', command=save_file).place(x=140, y=5)
-b2 = Button(root, width='10', height='1', bg='white', fg='black', text='OPEN', command=open_file).place(x=420, y=5)
-b3 = Button(root, width='5', height='1', bg='black', fg='green', text='CALC', command=open_calc).place(x=590, y=20)
-B4 = Button(root, width='5', height='1', bg='black', fg='green', text='TALK', command=speak).place(x=5, y=20)
+# All the buttons:
+B4 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='TALK!',
+            command=speak).pack(side="left")
 
-entry = Text(root, height='26.5', width=58, background='black', wrap=WORD, font='Arial 15', fg='green')
-entry.config(insertbackground="white")
-entry.place(x=0.5, y=50)
+b3 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='CALCULATOR',
+            command=open_calc).pack(side="left")
 
-######
-##################################################################################################################
-######
+b1 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='OPEN FILE',
+            command=open_file).pack(side="right")
 
+b2 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='SAVE FILE',
+            command=save_file).pack(side="right")
 
-
-
-clock = Label(root, font=('Arial', 15), background="black", foreground="green")
-clock.pack(anchor="n")
+# Clock on the same frame as buttons:
+clock = Label(button_frame, font=('Arial', 15), background="black", foreground="green")
+clock.pack(side="left")
 get_time()
 
-#################
-# use transparency level 0.1 to 1.0 (no transparency)
-root.attributes("-alpha", 0.88,)
+# Frame for entry text:
+my_frame = Frame(root)
+my_frame.pack(pady=5)
 
-#################
+# scrollbar for textbox
+text_scroll = Scrollbar(my_frame)
+text_scroll.pack(side="right", fill=Y)
+
+# Entry Textbox
+entry = Text(my_frame, background='black', width=195, height=55, wrap=WORD, insertbackground="white", font='Arial 15',
+             fg='green', undo=True,
+             yscrollcommand=text_scroll.set)
+entry.pack(fill="both")
+
+text_scroll.config(command=entry.yview)
+
+# Use transparency level 0.1 to 1.0 (no transparency)
+root.attributes("-alpha", 0.88,)
 
 root.mainloop()
