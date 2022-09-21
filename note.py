@@ -115,7 +115,7 @@ def open_calc():
     # set the configuration of GUI window
     gui.geometry("270x150")
     gui.resizable(False, False)
-
+    gui.attributes("-alpha", 0.88, )
     # StringVar() is the variable class
     # we create an instance of this class
     equation = StringVar()
@@ -208,7 +208,7 @@ button_frame = Frame(root, background="black")
 button_frame.pack(pady=2)
 
 # All the buttons:
-B4 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='TALK!',
+B4 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='SPEAK!',
             command=speak).pack(side="left")
 
 b3 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='CALCULATOR',
