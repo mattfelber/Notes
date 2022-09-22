@@ -5,10 +5,37 @@ from time import strftime
 import threading
 
 
+# Set the variable that grabs filename ( to make the save... function)
+global open_file_name
+open_file_name = False
+
+
 def new_file():
     entry.delete("1.0", END)
     root.title("New       ")
-    status_bar.config(text='New File created       ')
+    status_bar.config(text='Created: New file       ')
+
+
+def open_file():
+    entry.delete("1.0", END)
+    text_file = filedialog.askopenfilename(title="Open File", initialdir='C:/Users/mfran/Documents/DESKTOP/',
+                                           filetypes=(("Text Files", "*.txt"), ("HTML Files", "*.html"),
+                                                      ("Python Files", "*.py"), ("All Files", "*.*")))
+    if text_file:
+        global open_file_name
+        open_file_name = text_file
+
+    # Update Status Bars:
+    name = text_file
+    status_bar.config(text=f'Opened file: {name}       ')
+    name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
+    root.title(f'{name}     ')
+
+    # Open the Text File:
+    text_file = open(text_file, 'r', encoding='utf-8')
+    stuff = text_file.read()
+    entry.insert(END, stuff)
+    text_file.close()
 
 
 def save_file():
@@ -29,23 +56,15 @@ def save_file():
         text_file.close()
 
 
-def open_file():
-    entry.delete("1.0", END)
-    text_file = filedialog.askopenfilename(title="Open File", initialdir='C:/Users/mfran/Documents/DESKTOP/',
-                                           filetypes=(("Text Files", "*.txt"), ("HTML Files", "*.html"),
-                                                      ("Python Files", "*.py"), ("All Files", "*.*")))
-
-    # Update Status Bars:
-    name = text_file
-    status_bar.config(text=f'Opened file: {name}       ')
-    name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
-    root.title(f'{name}     ')
-
-    # Open the Text File:
-    text_file = open(text_file, 'r', encoding='utf-8')
-    stuff = text_file.read()
-    entry.insert(END, stuff)
-    text_file.close()
+def save():
+    global open_file_name
+    if open_file_name:
+        text_file = open(open_file_name, 'w')
+        text_file.write(entry.get(1.0, END))
+        text_file.close()
+        status_bar.config(text=f'Saved file: {open_file_name}')
+    else:
+        save_file()
 
 
 # A CLOCK:
@@ -57,7 +76,7 @@ def get_time():
 
 def speak():
     speaker = pyttsx3.init()
-    status_bar.config(text=f'Activated speak command       ')
+    status_bar.config(text=f'Activated: speak command       ')
     voices = speaker.getProperty('voices')
     speaker.setProperty('voice', voices[1].id)
     textcontent = entry.get(1.0, END)
@@ -73,6 +92,7 @@ def open_calc():
     status_bar.config(text=f'Opened: HolyCalc       ')
     # Function to update expression
     # in the text entry box
+
     def press(num):
         # point out the global expression variable
         global expression
@@ -241,7 +261,7 @@ button_frame = Frame(root, background="black")
 button_frame.pack()
 #
 # BUTTONS:
-B4 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='SPEAK!',
+B4 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='SPEAK',
             command=speak)
 B4.pack(side="left")
 
@@ -249,13 +269,15 @@ B3 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='
             command=open_calc)
 B3.pack(side="left")
 
+B2 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='SAVE',
+            command=save)
+B2.pack(side="left")
+
 B1 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='OPEN FILE',
             command=open_file)
 B1.pack(side="left")
 
-B2 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='SAVE FILE',
-            command=save_file)
-B2.pack(side="left")
+
 #
 #-----------------------------------------------------------------------------------------------------------------------
 # Digital CLOCK pack:
@@ -294,7 +316,8 @@ root.config(menu=my_menu)
 file_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
 my_menu.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="New File", command=new_file)
-file_menu.add_command(label="Save File", command=save_file)
+file_menu.add_command(label="Save", command=save)
+file_menu.add_command(label="Save As...", command=save_file)
 file_menu.add_command(label="Open File", command=open_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=root.quit)
