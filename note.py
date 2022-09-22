@@ -9,6 +9,9 @@ import wikipedia as wiki
 global open_file_name
 open_file_name = False
 
+global selected
+selected = False
+
 
 def new_file():
     entry.delete("1.0", END)
@@ -63,11 +66,15 @@ def save():
     global open_file_name
 
     if open_file_name:
+
         text_file = open(open_file_name, 'w')
         text_file.write(entry.get(1.0, END))
         text_file.close()
         status_bar.config(text=f'Saved file: {open_file_name}')
-
+        name = open_file_name
+        name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
+        name = open_file_name
+        root.title(f'{name}')
     else:
         save_file()
 
@@ -287,9 +294,6 @@ B3 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='
             command=open_calc)
 B3.pack(side="left")
 
-B2 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='SAVE',
-            command=save)
-B2.pack(side="left")
 
 B1 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='WIKIPEDIA',
             command=wiki_sum)
