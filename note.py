@@ -15,6 +15,9 @@ def new_file():
     root.title("New       ")
     status_bar.config(text='Created: New file       ')
 
+    global open_status_name
+    open_status_name = False
+
 
 def open_file():
     entry.delete("1.0", END)
