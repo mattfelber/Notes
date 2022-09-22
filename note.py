@@ -4,32 +4,51 @@ from tkinter import filedialog
 from time import strftime
 import threading
 
-root = Tk()
-root.geometry("640x480")
-root.title("Note")
-icon = PhotoImage(file='pngkeys2.png')
-root.iconphoto(True, icon)
-root.config(bg='black')
+
+def new_file():
+    entry.delete("1.0", END)
+    root.title("New       ")
+    status_bar.config(text='New File created       ')
 
 
 def save_file():
     print("")
-    open_file = filedialog.asksaveasfile(mode='w', defaultextension='*txt')
-    if open_file is None:
-        return
-    text = str(entry.get(1.0, END))
-    open_file.write(text)
-    open_file.close()
+    text_file = filedialog.asksaveasfilename(defaultextension='.*', initialdir='C:/Users/mfran/Documents/DESKTOP/',
+                                             title="Save File",
+                                             filetypes=(("Text Files", "*.txt"), ("HTML Files", "*.html"),
+                                                        ("Python Files", "*.py"), ("All Files", "*.*")))
+    if text_file:
+        # Updating the status bar and title
+        name = text_file
+        status_bar.config(text=f'Save file: {name}')
+        name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
+        root.title(f'{name}       ')
+        # Save file
+        text_file = open(text_file, 'w')
+        text_file.write(entry.get(1.0, END))
+        text_file.close()
 
 
 def open_file():
-    file = filedialog.askopenfile(mode='r', defaultextension='*txt')
-    if file is not None:
-        content = file.read()
-    entry.insert(INSERT, content)
+    entry.delete("1.0", END)
+    text_file = filedialog.askopenfilename(title="Open File", initialdir='C:/Users/mfran/Documents/DESKTOP/',
+                                           filetypes=(("Text Files", "*.txt"), ("HTML Files", "*.html"),
+                                                      ("Python Files", "*.py"), ("All Files", "*.*")))
+
+    # Update Status Bars:
+    name = text_file
+    status_bar.config(text=f'Open file: {name}       ')
+    name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
+    root.title(f'{name}     ')
+
+    # Open the Text File:
+    text_file = open(text_file, 'r', encoding='utf-8')
+    stuff = text_file.read()
+    entry.insert(END, stuff)
+    text_file.close()
 
 
-# A DIGITAL CLOCK TO DISPLAY:
+# A CLOCK:
 def get_time():
     string = strftime('%H:%M:%S %p')
     clock.config(text=string)
@@ -40,12 +59,12 @@ def speak():
     speaker = pyttsx3.init()
     voices = speaker.getProperty('voices')
     speaker.setProperty('voice', voices[1].id)
-    text_content = entry.get(1.0, END)
-    speaker.say(text_content)
+    textcontent = entry.get(1.0, END)
+    speaker.say(textcontent)
     threading.Thread(target=speaker.runAndWait).start()
 
 
-# A CALCULATOR:
+# A WHOLE CALCULATOR:
 def open_calc():
     global expression
     # globally declare the expression variable
@@ -114,8 +133,7 @@ def open_calc():
 
     # set the configuration of GUI window
     gui.geometry("270x150")
-    gui.resizable(False, False)
-    gui.attributes("-alpha", 0.88, )
+
     # StringVar() is the variable class
     # we create an instance of this class
     equation = StringVar()
@@ -203,45 +221,100 @@ def open_calc():
     # start the GUI
     gui.mainloop()
 
-# Frame for buttons
+
+####################///#################///#################///#################///#################///#################
+##                                                   THE GUI:                                                        ###
+####################///#################///#################///#################///#################///#################
+
+root = Tk()
+root.geometry("640x640")
+root.title("Note")
+icon = PhotoImage(file='pngkeys2.png')
+root.iconphoto(True, icon)
+root.config(bg='black')
+root.resizable(True, True)
+root.attributes("-alpha", 0.88, )  # Transparency level up to 1.0
+#-----------------------------------------------------------------------------------------------------------------------
+#                                                  FRAMING BUTTONS:
 button_frame = Frame(root, background="black")
-button_frame.pack(pady=2)
+button_frame.pack()
+#
+# BUTTONS:
+B4 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='TALK',
+            command=speak)
+B4.pack(side="left")
 
-# All the buttons:
-B4 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='SPEAK!',
-            command=speak).pack(side="left")
+B3 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='CALCULATOR',
+            command=open_calc)
+B3.pack(side="left")
 
-b3 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='CALCULATOR',
-            command=open_calc).pack(side="left")
+B1 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='OPEN FILE',
+            command=open_file)
+B1.pack(side="left")
 
-b1 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='OPEN FILE',
-            command=open_file).pack(side="right")
-
-b2 = Button(button_frame, width='11', height='1', bg='grey3', fg='green', text='SAVE FILE',
-            command=save_file).pack(side="right")
-
-# Clock on the same frame as buttons:
+B2 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='SAVE FILE',
+            command=save_file)
+B2.pack(side="left")
+#
+#-----------------------------------------------------------------------------------------------------------------------
+# Digital CLOCK pack:
 clock = Label(button_frame, font=('Arial', 15), background="black", foreground="green")
 clock.pack(side="left")
 get_time()
 
-# Frame for entry text:
+# FRAME for the entry text:
 my_frame = Frame(root)
-my_frame.pack(pady=5)
+my_frame.pack(expand=1, fill='both')
 
-# scrollbar for textbox
+# Y-scrollbar for text-frame
 text_scroll = Scrollbar(my_frame)
-text_scroll.pack(side="right", fill=Y)
+text_scroll.pack(side="right", fill='y')
 
-# Entry Textbox
-entry = Text(my_frame, background='black', width=195, height=55, wrap=WORD, insertbackground="white", font='Arial 15',
-             fg='green', undo=True,
-             yscrollcommand=text_scroll.set)
-entry.pack(fill="both")
+# ENTRY TEXT
+entry = Text(my_frame, background='black', wrap=WORD, insertbackground="white", font='Arial 15',
+             fg='green', undo=True, selectforeground="black", selectbackground="yellow", yscrollcommand=text_scroll.set)
 
+entry.pack(expand=1, fill='both')
+
+# Configure SCROLLBAR:
 text_scroll.config(command=entry.yview)
 
-# Use transparency level 0.1 to 1.0 (no transparency)
-root.attributes("-alpha", 0.88,)
+###############################################################
+#                         MENU:                               #
+###############################################################
+# MENU FRAME & CONFIG:
+menu_frame = Frame(root)
+menu_frame.pack()
+
+my_menu = Menu(menu_frame)
+root.config(menu=my_menu)
+
+# Add File --- Menu:
+file_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
+my_menu.add_cascade(label="File", menu=file_menu)
+file_menu.add_command(label="New File", command=new_file)
+file_menu.add_command(label="Save File", command=save_file)
+file_menu.add_command(label="Open File", command=open_file)
+file_menu.add_separator()
+file_menu.add_command(label="Exit", command=root.quit)
+#--------------------------------------------------------------
+# Edit --- Menu:
+#edit_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
+#my_menu.add_cascade(label="Edit", menu=edit_menu)
+#edit_menu.add_command(label="Cut")
+#edit_menu.add_command(label="Copy")
+#edit_menu.add_command(label="Paste")
+#edit_menu.add_command(label="Redo")
+#--------------------------------------------------------------
+# Search Wikipedia --- Menu:
+
+#--------------------------------------------------------------
+###############################################################
+
+###############################################################
+# Status Bar at the bottom:
+status_bar = Label(root, text=f'       ', anchor=E)
+status_bar.config(background="black", foreground="snow")
+status_bar.pack(fill='x', side=BOTTOM, ipady=0)
 
 root.mainloop()
