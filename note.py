@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import filedialog
 from time import strftime
 import threading
-
+import wikipedia as wiki
 
 # Set the variable that grabs filename ( to make the save... function)
 global open_file_name
@@ -15,8 +15,8 @@ def new_file():
     root.title("New       ")
     status_bar.config(text='Created: New file       ')
 
-    global open_status_name
-    open_status_name = False
+    global open_file_name
+    open_file_name = False
 
 
 def open_file():
@@ -42,7 +42,6 @@ def open_file():
 
 
 def save_file():
-    print("")
     text_file = filedialog.asksaveasfilename(defaultextension='.*', initialdir='C:/Users/mfran/Documents/DESKTOP/',
                                              title="Save File",
                                              filetypes=(("Text Files", "*.txt"), ("HTML Files", "*.html"),
@@ -57,18 +56,34 @@ def save_file():
         text_file = open(text_file, 'w')
         text_file.write(entry.get(1.0, END))
         text_file.close()
-
+        global open_file_name
+        open_file_name = text_file
 
 def save():
     global open_file_name
+
     if open_file_name:
         text_file = open(open_file_name, 'w')
         text_file.write(entry.get(1.0, END))
         text_file.close()
         status_bar.config(text=f'Saved file: {open_file_name}')
+
     else:
         save_file()
 
+## Wikipedia Search the selected texts:
+def wiki_sum():
+    global selected
+    if entry.selection_get():
+        selected = entry.selection_get()
+        data = wiki.summary(f'\'{selected}\'', sentences=35)
+        entry.insert(END, "\n\n")
+        status_bar.config(text='Highlighted text searched on Wikipedia')
+        # output wikipedia to textbox
+        entry.insert(END, data)
+    else:
+        test = wiki.suggest
+        entry.insert(END, test)
 
 # A CLOCK:
 def get_time():
@@ -276,8 +291,8 @@ B2 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='
             command=save)
 B2.pack(side="left")
 
-B1 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='OPEN FILE',
-            command=open_file)
+B1 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='WIKIPEDIA',
+            command=wiki_sum)
 B1.pack(side="left")
 
 
@@ -286,7 +301,7 @@ B1.pack(side="left")
 # Digital CLOCK pack:
 clock = Label(button_frame, font=('Arial', 15), background="black", foreground="green")
 clock.pack(side="left")
-get_time()
+threading.Thread(target=get_time).start()
 
 # FRAME for the entry text:
 my_frame = Frame(root)
@@ -322,6 +337,7 @@ file_menu.add_command(label="New File", command=new_file)
 file_menu.add_command(label="Save", command=save)
 file_menu.add_command(label="Save As...", command=save_file)
 file_menu.add_command(label="Open File", command=open_file)
+file_menu.add_command(label="Clear", command=lambda: entry.delete(1.0, END))
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=root.quit)
 #--------------------------------------------------------------
