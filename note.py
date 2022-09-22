@@ -20,7 +20,7 @@ def save_file():
     if text_file:
         # Updating the status bar and title
         name = text_file
-        status_bar.config(text=f'Save file: {name}')
+        status_bar.config(text=f'Saved file: {name}')
         name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
         root.title(f'{name}       ')
         # Save file
@@ -37,7 +37,7 @@ def open_file():
 
     # Update Status Bars:
     name = text_file
-    status_bar.config(text=f'Open file: {name}       ')
+    status_bar.config(text=f'Opened file: {name}       ')
     name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
     root.title(f'{name}     ')
 
@@ -57,6 +57,7 @@ def get_time():
 
 def speak():
     speaker = pyttsx3.init()
+    status_bar.config(text=f'Activated speak command       ')
     voices = speaker.getProperty('voices')
     speaker.setProperty('voice', voices[1].id)
     textcontent = entry.get(1.0, END)
@@ -69,7 +70,7 @@ def open_calc():
     global expression
     # globally declare the expression variable
     expression = ""
-
+    status_bar.config(text=f'Opened: HolyCalc       ')
     # Function to update expression
     # in the text entry box
     def press(num):
@@ -240,7 +241,7 @@ button_frame = Frame(root, background="black")
 button_frame.pack()
 #
 # BUTTONS:
-B4 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='TALK',
+B4 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='SPEAK!',
             command=speak)
 B4.pack(side="left")
 
