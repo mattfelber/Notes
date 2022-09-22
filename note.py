@@ -123,6 +123,19 @@ def bold_it():
     else:
         entry.tag_add("bold", "sel.first", "sel.last")
 
+def italics_it():
+    italics_font = font.Font(entry, entry.cget("font"))
+    italics_font.configure(slant="italic")
+
+    entry.tag_configure("italic", font=italics_font)
+
+    current_tags = entry.tag_names("sel.first")
+
+    if "italic" in current_tags:
+        entry.tag_remove("italic", "sel.first", "sel.last")
+    else:
+        entry.tag_add("italic", "sel.first", "sel.last")
+
 
 # A CALCULATOR:
 def open_calc():
@@ -364,7 +377,7 @@ file_menu.add_command(label="Exit", command=root.quit)
 edit_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
 my_menu.add_cascade(label="Edit", menu=edit_menu)
 edit_menu.add_command(label="Bold", command=bold_it)
-#edit_menu.add_command(label="Cut")
+edit_menu.add_command(label="Italic", command=italics_it)
 #edit_menu.add_command(label="Copy")
 #edit_menu.add_command(label="Paste")
 #edit_menu.add_command(label="Redo")
