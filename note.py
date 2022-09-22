@@ -1,16 +1,15 @@
 import pyttsx3
 from tkinter import *
 from tkinter import filedialog
+from tkinter import font
 from time import strftime
 import threading
 import wikipedia as wiki
 
+
 # Set the variable that grabs filename ( to make the save... function)
 global open_file_name
 open_file_name = False
-
-global selected
-selected = False
 
 
 def new_file():
@@ -73,7 +72,7 @@ def save():
         status_bar.config(text=f'Saved file: {open_file_name}')
         name = open_file_name
         name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
-        name = open_file_name
+        #name = open_file_name
         root.title(f'{name}')
     else:
         save_file()
@@ -109,7 +108,23 @@ def speak():
     threading.Thread(target=speaker.runAndWait).start()
 
 
-# A WHOLE CALCULATOR:
+
+
+def bold_it():
+    bold_font = font.Font(entry, entry.cget("font"))
+    bold_font.configure(weight="bold")
+
+    entry.tag_configure("bold", font=bold_font)
+
+    current_tags = entry.tag_names("sel.first")
+
+    if "bold" in current_tags:
+        entry.tag_remove("bold", "sel.first", "sel.last")
+    else:
+        entry.tag_add("bold", "sel.first", "sel.last")
+
+
+# A CALCULATOR:
 def open_calc():
     global expression
     # globally declare the expression variable
@@ -346,8 +361,9 @@ file_menu.add_separator()
 file_menu.add_command(label="Exit", command=root.quit)
 #--------------------------------------------------------------
 # Edit --- Menu:
-#edit_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
-#my_menu.add_cascade(label="Edit", menu=edit_menu)
+edit_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
+my_menu.add_cascade(label="Edit", menu=edit_menu)
+edit_menu.add_command(label="Bold", command=bold_it)
 #edit_menu.add_command(label="Cut")
 #edit_menu.add_command(label="Copy")
 #edit_menu.add_command(label="Paste")
