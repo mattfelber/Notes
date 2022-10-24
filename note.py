@@ -1,3 +1,4 @@
+import win32api
 import pyttsx3
 from tkinter import *
 from tkinter import filedialog
@@ -5,6 +6,9 @@ from tkinter import font
 from time import strftime
 import threading
 import wikipedia as wiki
+
+
+btncolor1 = 'darkorchid'
 
 
 # Set the variable that grabs filename ( to make the save... function)
@@ -22,6 +26,7 @@ def new_file():
 
 
 def open_file():
+
     entry.delete("1.0", END)
     text_file = filedialog.askopenfilename(title="Open File", initialdir='C:/Users/mfran/Documents/DESKTOP/',
                                            filetypes=(("Text Files", "*.txt"), ("HTML Files", "*.html"),
@@ -61,6 +66,7 @@ def save_file():
         global open_file_name
         open_file_name = text_file
 
+
 def save():
     global open_file_name
 
@@ -72,8 +78,9 @@ def save():
         status_bar.config(text=f'Saved file: {open_file_name}')
         name = open_file_name
         name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
-        #name = open_file_name
         root.title(f'{name}')
+
+
     else:
         save_file()
 
@@ -102,7 +109,7 @@ def speak():
     speaker = pyttsx3.init()
     status_bar.config(text=f'Activated: speak command       ')
     voices = speaker.getProperty('voices')
-    speaker.setProperty('voice', voices[1].id)
+    speaker.setProperty('voice', voices[2].id)
     textcontent = entry.get(1.0, END)
     speaker.say(textcontent)
     threading.Thread(target=speaker.runAndWait).start()
@@ -314,16 +321,16 @@ button_frame = Frame(root, background="black")
 button_frame.pack()
 #
 # BUTTONS:
-B4 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='SPEAK',
+B4 = Button(button_frame, width='10', height='1', bg='grey3', fg=btncolor1, text='SPEAK',
             command=speak)
 B4.pack(side="left")
 
-B3 = Button(button_frame, width='12', height='1', bg='grey3', fg='green', text='CALCULATOR',
+B3 = Button(button_frame, width='12', height='1', bg='grey3', fg=btncolor1, text='CALCULATOR',
             command=open_calc)
 B3.pack(side="left")
 
 
-B1 = Button(button_frame, width='10', height='1', bg='grey3', fg='green', text='WIKIPEDIA',
+B1 = Button(button_frame, width='10', height='1', bg='grey3', fg=btncolor1, text='WIKIPEDIA',
             command=wiki_sum)
 B1.pack(side="left")
 
@@ -331,7 +338,7 @@ B1.pack(side="left")
 #
 #-----------------------------------------------------------------------------------------------------------------------
 # Digital CLOCK pack:
-clock = Label(button_frame, font=('Arial', 15), background="black", foreground="green")
+clock = Label(button_frame, font=('Arial', 15), background="black", foreground=btncolor1)
 clock.pack(side="left")
 threading.Thread(target=get_time).start()
 
