@@ -22,7 +22,7 @@ open_file_name = False
 def new_file():
     entry.delete("1.0", END)
     root.title("New       ")
-    status_bar.config(text='Created: New file       ')
+    status_bar.configure(text='Created: New file       ')
 
     global open_file_name
     open_file_name = False
@@ -39,7 +39,7 @@ def open_file():
 
     # Update Status Bars:
     name = text_file
-    status_bar.config(text=f'Opened file: {name}       ')
+    status_bar.configure(text=f'Opened file: {name}       ')
     name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
     root.title(f'{name}     ')
 
@@ -58,7 +58,7 @@ def save_file():
     if text_file:
         # Updating the status bar and title
         name = text_file
-        status_bar.config(text=f'Saved file: {name}')
+        status_bar.configure(text=f'Saved file: {name}')
         name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
         root.title(f'{name}       ')
         # Save file
@@ -77,7 +77,7 @@ def save():
         text_file = open(open_file_name, 'w')
         text_file.write(entry.get(1.0, END))
         text_file.close()
-        status_bar.config(text=f'Saved file: {open_file_name}')
+        status_bar.configure(text=f'Saved file: {open_file_name}')
         name = open_file_name
         name = name.replace("C:/Users/mfran/Documents/DESKTOP/", "")
         root.title(f'{name}')
@@ -94,7 +94,7 @@ def wiki_sum():
         selected = entry.selection_get()
         data = wiki.summary(f'\'{selected}\'', sentences=35)
         entry.insert(END, "\n\n")
-        status_bar.config(text='Highlighted text searched on Wikipedia')
+        status_bar.configure(text='Highlighted text searched on Wikipedia')
         # output wikipedia to textbox
         entry.insert(END, data)
     else:
@@ -105,13 +105,13 @@ def wiki_sum():
 # A CLOCK:
 def get_time():
     string = strftime('%H:%M:%S %p')
-    clock.config(text=string)
+    clock.configure(text=string)
     clock.after(1000, get_time)
 
 
 def speak():
     speaker = pyttsx3.init()
-    status_bar.config(text=f'Activated: speak command       ')
+    status_bar.configure(text=f'Activated: speak command       ')
     voices = speaker.getProperty('voices')
     speaker.setProperty('voice', voices[2].id)
     textcontent = entry.get(1.0, END)
@@ -152,7 +152,7 @@ def open_calc():
     global expression
     # globally declare the expression variable
     expression = ""
-    status_bar.config(text=f'Opened: HolyCalc       ')
+    status_bar.configure(text=f'Opened: HolyCalc       ')
 
     # Function to update expression
     # in the text entry box
@@ -325,22 +325,22 @@ button_frame = customtkinter.CTkFrame(root, background="black")
 button_frame.pack()
 #
 # BUTTONS:
-B4 = customtkinter.CTkButton(button_frame, bg='grey3', text='SPEAK',
+B4 = customtkinter.CTkButton(button_frame, text_color='black', text='SPEAK',
                              command=speak)
 B4.pack(side="left")
 
-B3 = customtkinter.CTkButton(button_frame, bg='grey3', text='CALCULATOR',
+B3 = customtkinter.CTkButton(button_frame, text_color='black', text='CALCULATOR',
                              command=open_calc)
 B3.pack(side="left")
 
-B1 = customtkinter.CTkButton(button_frame, bg='grey3', text='WIKIPEDIA',
+B1 = customtkinter.CTkButton(button_frame, text_color='black', text='WIKIPEDIA',
                              command=wiki_sum)
 B1.pack(side="left")
 
 #
 # -----------------------------------------------------------------------------------------------------------------------
 # Digital CLOCK pack:
-clock = customtkinter.CTkLabel(button_frame, background="black", foreground=btncolor1)
+clock = customtkinter.CTkLabel(button_frame, bg_color=btncolor1, fg_color='black')
 clock.pack(side="left")
 threading.Thread(target=get_time).start()
 
@@ -354,7 +354,7 @@ text_scroll.pack(side="right", fill='y')
 
 # ENTRY TEXT
 entry = Text(my_frame, background='black', wrap=WORD, insertbackground="white", font='Arial 15',
-             fg='green', undo=True, selectforeground="black", selectbackground="yellow", yscrollcommand=text_scroll.set)
+             fg='white', undo=True, selectforeground="black", selectbackground="yellow", yscrollcommand=text_scroll.set)
 
 entry.pack(expand=1, fill='both')
 
