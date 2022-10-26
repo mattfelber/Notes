@@ -1,4 +1,3 @@
-import win32api
 import pyttsx3
 from tkinter import *
 from tkinter import filedialog
@@ -7,6 +6,8 @@ from time import strftime
 import threading
 import wikipedia as wiki
 import customtkinter
+import nltk
+from nltk.corpus import wordnet
 
 
 customtkinter.set_appearance_mode("system")  # Modes: "System" (standard), "Dark", "Light"
@@ -87,7 +88,36 @@ def save():
         save_file()
 
 
-## Wikipedia Search the selected texts:
+def websteros():
+    global selected
+    if entry.selection_get():
+        selected = entry.selection_get()
+
+    syn = wordnet.synsets(selected)
+    defin = syn[0].definition()  # print definition
+
+    synonyms = []
+    for syn in wordnet.synsets(selected):
+        for lemma in syn.lemmas():
+            synonyms.append(lemma.name())
+    #print(synonyms)  # print synonyms
+
+    antonyms = []
+    for syn in wordnet.synsets(selected):
+        for lemma in syn.lemmas():
+            if lemma.antonyms():
+                antonyms.append(lemma.antonyms()[0].name())
+    #print(antonyms)  # print antonyms
+
+    entry.insert(END, "\n\n")
+    status_bar.configure(text='Dictionary entries for highlited text')
+
+    # output entries to textbox
+
+    entry.insert(END, f"DEFINITION: {defin}\n\nSYNONYMS: {synonyms}\n\nANTONYMS: {antonyms}")
+
+
+
 def wiki_sum():
     global selected
     if entry.selection_get():
@@ -113,7 +143,7 @@ def speak():
     speaker = pyttsx3.init()
     status_bar.configure(text=f'Activated: speak command       ')
     voices = speaker.getProperty('voices')
-    speaker.setProperty('voice', voices[2].id)
+    speaker.setProperty('voice', voices[1].id)
     textcontent = entry.get(1.0, END)
     speaker.say(textcontent)
     threading.Thread(target=speaker.runAndWait).start()
@@ -314,7 +344,7 @@ def open_calc():
 root = customtkinter.CTk()
 root.geometry("640x640")
 root.title("Note")
-icon = PhotoImage(file='pngkeys2.png')
+icon = PhotoImage(file='C:\\Users\\mfran\\PycharmProjects\\NotepadTTS\\pngkeys2.png')
 root.iconphoto(True, icon)
 root.configure(bg='black')
 root.resizable(True, True)
@@ -329,8 +359,8 @@ B4 = customtkinter.CTkButton(button_frame, text_color='black', text='SPEAK',
                              command=speak)
 B4.pack(side="left")
 
-B3 = customtkinter.CTkButton(button_frame, text_color='black', text='CALCULATOR',
-                             command=open_calc)
+B3 = customtkinter.CTkButton(button_frame, text_color='black', text='DICTIONARY',
+                             command=websteros)
 B3.pack(side="left")
 
 B1 = customtkinter.CTkButton(button_frame, text_color='black', text='WIKIPEDIA',
@@ -340,7 +370,7 @@ B1.pack(side="left")
 #
 # -----------------------------------------------------------------------------------------------------------------------
 # Digital CLOCK pack:
-clock = customtkinter.CTkLabel(button_frame, bg_color=btncolor1, fg_color='black')
+clock = customtkinter.CTkLabel(button_frame, text_color=btncolor1, fg_color='black')
 clock.pack(side="left")
 threading.Thread(target=get_time).start()
 
@@ -391,7 +421,11 @@ edit_menu.add_command(label="Italic", command=italics_it)
 # edit_menu.add_command(label="Paste")
 # edit_menu.add_command(label="Redo")
 # --------------------------------------------------------------
-# Search Wikipedia --- Menu:
+# Tools  --- Menu:
+# Edit --- Menu:
+tools_menu = Menu(my_menu, tearoff=False, bg="black", fg="snow")
+my_menu.add_cascade(label="Tools", menu=tools_menu)
+tools_menu.add_command(label="Calculator", command=open_calc)
 
 # --------------------------------------------------------------
 ###############################################################
