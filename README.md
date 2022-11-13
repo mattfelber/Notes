@@ -1,5 +1,5 @@
 ![](
-/screenshot/tts-editor-wiki.png)
+/screenshot/note.png)
 
 Highlight text and click WIKIPEDIA to get a summary. TALK to convertS text to speech. Highlight text and click DICTIONARY for definition+syns+ants.
 
